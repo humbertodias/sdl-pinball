@@ -9,12 +9,6 @@
 #include "p2Point.h"
 #include "math.h"
 
-#ifdef _DEBUG
-#pragma comment( lib, "Box2D/libx86/Debug/Box2D.lib" )
-#else
-#pragma comment( lib, "Box2D/libx86/Release/Box2D.lib" )
-#endif
-
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	world = NULL;
@@ -50,13 +44,17 @@ update_status ModulePhysics::PreUpdate()
 	{
 		if(c->GetFixtureA()->IsSensor() && c->IsTouching())
 		{
-			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+//			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+//			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
+			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
+
+
 			if(pb1 && pb2 && pb1->listener)
 				pb1->listener->OnCollision(pb1, pb2);
 		}
 	}
-	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -82,7 +80,8 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+	//b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = radius;
 
 	return pbody;
@@ -107,7 +106,8 @@ PhysBody* ModulePhysics::CreateCircleSensor(int x, int y, int radius)
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+//	b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = radius;
 
 	return pbody;
@@ -136,7 +136,8 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, bo
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+	//b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);;
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
 
@@ -168,7 +169,8 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+	//b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = width;
 	pbody->height = height;
 
@@ -225,7 +227,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool d
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+	//b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = 0;
 
 	return pbody;
@@ -262,16 +265,17 @@ PhysBody* ModulePhysics::CreateChainSensor(int x, int y, int* points, int size)
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	b->SetUserData(pbody);
+	//b->SetUserData(pbody);
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = 0;
 
 	return pbody;
 }
 
-// 
+//
 update_status ModulePhysics::PostUpdate()
 {
-	
+
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
@@ -299,12 +303,14 @@ update_status ModulePhysics::PostUpdate()
 				case b2Shape::e_polygon:
 				{
 					b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
-					int32 count = polygonShape->GetVertexCount();
+					//int32 count = polygonShape->GetVertexCount();
+					int32 count = polygonShape->m_count;
 					b2Vec2 prev, v;
 
 					for(int32 i = 0; i < count; ++i)
 					{
-						v = b->GetWorldPoint(polygonShape->GetVertex(i));
+						//v = b->GetWorldPoint(polygonShape->GetVertex(i));
+						v = polygonShape->m_vertices[i];
 						if(i > 0)
 
 							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
@@ -312,7 +318,8 @@ update_status ModulePhysics::PostUpdate()
 						prev = v;
 					}
 
-					v = b->GetWorldPoint(polygonShape->GetVertex(0));
+//					v = b->GetWorldPoint(polygonShape->GetVertex(0));
+					v = b->GetWorldPoint(polygonShape->m_vertices[0]);
 					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 				}
 				break;
@@ -356,8 +363,9 @@ update_status ModulePhysics::PostUpdate()
 					def.bodyA = ground;
 					def.bodyB = f->GetBody();
 					def.target = mouse_position;
-					def.dampingRatio = 2.5f;
-					def.frequencyHz = 2.0f;
+// TODO:
+//					def.dampingRatio = 2.5f;
+//					def.frequencyHz = 2.0f;
 					def.maxForce = 100.0f * f->GetBody()->GetMass();
 					mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
 				}
@@ -366,14 +374,14 @@ update_status ModulePhysics::PostUpdate()
 	}
 
 	// Draws and updates the mouse joint as long as the mouse button is kept pressed
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint != NULL && mouse_joint->IsActive() == true) {
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint != NULL && mouse_joint->IsEnabled() == true) {
 		b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()) * SCREEN_SIZE, PIXEL_TO_METERS(App->input->GetMouseY()) * SCREEN_SIZE);
 		App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), METERS_TO_PIXELS(mouse_position.x), METERS_TO_PIXELS(mouse_position.y), 255, 255, 0);
 		mouse_joint->SetTarget(mouse_position);
 	}
 
 	// Deletes mouse joint if mouse button is released
-	if ((App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsActive() == true)) {
+	if ((App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsEnabled() == true)) {
 		world->DestroyJoint(mouse_joint);
 		mouse_joint = NULL;
 	}
@@ -456,8 +464,11 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+//	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+//	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
+
 	int i = 0;
 
 
@@ -485,21 +496,21 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->ScoreUpdater(100);
 		App->scene_intro->sqcollected1 = true;
 	}
-	
+
 	if (physA == App->scene_intro->square2)
 	{
 		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
 		App->scene_intro->ScoreUpdater(100);
 		App->scene_intro->sqcollected2 = true;
 	}
-	
+
 	if (physA == App->scene_intro->square3)
 	{
 		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
 		App->scene_intro->ScoreUpdater(100);
 		App->scene_intro->sqcollected3 = true;
 	}
-	
+
 	if (physA == App->scene_intro->square4)
 	{
 		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
@@ -514,42 +525,42 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected1 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag2)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected2 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag3)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected3 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag4)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected4 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag5)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected5 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag6)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
 		App->scene_intro->ScoreUpdater(200);
 		App->scene_intro->tagCollected6 = true;
 	}
-	
+
 	if (physA == App->scene_intro->tag7)
 	{
 		App->audio->PlayFx(App->scene_intro->tags_hit);
@@ -598,7 +609,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->ScoreUpdater(500);
 		App->scene_intro->reverseAs = true;
 	}
-	
+
 	if (physA == App->scene_intro->light1)
 	{
 		App->audio->PlayFx(App->scene_intro->egg_hit);
@@ -648,7 +659,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->collected8 = true;
 	}
 
-	
+
 	if (physA == App->scene_intro->pulsator)
 	{
 		App->audio->PlayFx(App->scene_intro->card_hit);
@@ -659,9 +670,9 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		{
 			App->scene_intro->pulsatorUP = 1000u;
 		}
-			
+
 	}
-	
+
 
 	for (p2List_item<PhysBody*>* iterator = App->scene_intro->fivehundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
 	{
@@ -736,8 +747,10 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 void ModulePhysics::EndContact(b2Contact* contact)
 {
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+//	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+//	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
 
 	if (physA && physA->listener != NULL)
 		physA->listener->OnCollision(physA, physB);

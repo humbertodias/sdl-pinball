@@ -1,12 +1,29 @@
-// ----------------------------------------------------
-// Point class    -----------
-// ----------------------------------------------------
-
 #ifndef __P2POINT_H__
 #define __P2POINT_H__
 
 #include <math.h>
 
+// Base class p2Point
+template<class TYPE>
+class p2Point
+{
+public:
+    TYPE x, y;
+
+    // Default constructor
+    p2Point() : x(0), y(0) {}
+
+    // Constructor taking x and y
+    p2Point(TYPE x, TYPE y) : x(x), y(y) {}
+
+    // Copy constructor
+    p2Point(const p2Point& p) : x(p.x), y(p.y) {}
+
+    // Destructor
+    virtual ~p2Point() {}
+};
+
+// Derived class p2Vector
 template<class TYPE>
 class p2Vector : public p2Point<TYPE>
 {
@@ -14,10 +31,10 @@ public:
     // Default constructor
     p2Vector() : p2Point<TYPE>() {}
 
-    // Constructor taking another p2Point as input
+    // Constructor taking another p2Point
     p2Vector(const p2Point<TYPE>& p) : p2Point<TYPE>(p) {}
 
-    // Constructor taking x and y as input
+    // Constructor taking x and y
     p2Vector(TYPE x, TYPE y) : p2Point<TYPE>(x, y) {}
 
     void Normalize()
@@ -77,6 +94,9 @@ public:
     }
 };
 
+// Aliases for specific types
+typedef p2Point<int> iPoint;
+typedef p2Point<float> fPoint;
 typedef p2Vector<int> iVector;
 typedef p2Vector<float> fVector;
 

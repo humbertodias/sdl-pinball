@@ -169,27 +169,27 @@ update_status ModuleSceneIntro::Update()
 	if (stage != ST_TITLE_SCREEN)
 	{
 		//print of the top score
-		sprintf_s(topscore_text, 10, "%06d", topscore);
+		sprintf(topscore_text, "%06d", topscore);
 		App->fonts->BlitText(5, 40, font_name, topscore_text);
 		App->fonts->BlitText(20, 25, font_name, "TOP");
 
 		//print of the previous top score
-		sprintf_s(previousscore_text, 10, "%06d", previousscore);
+		sprintf(previousscore_text, "%06d", previousscore);
 		App->fonts->BlitText(5, 120, font_name, previousscore_text);
 		App->fonts->BlitText(10, 105, font_name, "PREV");
 
 
 		//print of the current score
-		sprintf_s(score_text, 10, "%06d", score);
+		sprintf(score_text, "%06d", score);
 		App->fonts->BlitText(5, 80, font_name, score_text);
 		App->fonts->BlitText(20, 65, font_name, "1UP");
 
 		//print of the number of balls
-		sprintf_s(ball_text, 10, "%02d", ball);
+		sprintf(ball_text, "%02d", ball);
 		App->fonts->BlitText(35, 170, font_name, ball_text);
 		App->fonts->BlitText(20, 155, font_name, "BALL");
 	}
-	
+
 	if (awardcount >= 5)
 	{
 		ball++;
@@ -213,7 +213,7 @@ void ModuleSceneIntro::TitleBlit() {
 	elements_rect.w = 192;
 	elements_rect.h = 104;
 	App->renderer->Blit(scene, 24, 24, &elements_rect);
-	
+
 	App->fonts->BlitText(60, 137, fontlightblue, "1 PLAYER GAME A");
 	App->fonts->BlitText(60, 157, fontlightblue, "1 PLAYER GAME B");
 	App->fonts->BlitText(60, 177, fontblue, "2 PLAYER GAME A");
@@ -307,7 +307,7 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.w = 9;
 	scene_rect.h = 13;
 	App->renderer->Blit(scene, 155, 149, &scene_rect);
-	scene_rect.x = 1;	
+	scene_rect.x = 1;
 	scene_rect.y = 304;
 	scene_rect.w = 51;
 	scene_rect.h = 11;
@@ -482,7 +482,7 @@ void ModuleSceneIntro::HighStageBlit() {
 	App->renderer->Blit(scene, 34, 169, &scene_rect); //ball num blit
 
 	//blit of the pulsator award
-	sprintf_s(pulsatorUP_text, 10, "%7d", pulsatorUP);
+	sprintf(pulsatorUP_text,  "%7d", pulsatorUP);
 	App->fonts->BlitText(95, 64, font2, pulsatorUP_text);
 
 	LightBLit();
