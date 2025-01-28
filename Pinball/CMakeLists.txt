@@ -41,9 +41,7 @@ INCLUDE(FindPkgConfig REQUIRED)
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 PKG_CHECK_MODULES(SDL2_IMAGE REQUIRED SDL2_image)
 PKG_CHECK_MODULES(SDL2mixer REQUIRED SDL2_mixer)
-
-set(Box2d_INCLUDE_DIRS /opt/homebrew/Cellar/box2d/3.0.0/include)
-set(Box2d_LINK_LIBRARIES /opt/homebrew/Cellar/box2d/3.0.0/lib)
+PKG_CHECK_MODULES(Box2d REQUIRED Box2d)
 
 # Platform-specific configurations
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
