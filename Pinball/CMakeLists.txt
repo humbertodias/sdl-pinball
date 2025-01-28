@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-set(PROJECT pinball)
+set(PROJECT Pinball)
 project(${PROJECT})
 
 # Add global definitions
