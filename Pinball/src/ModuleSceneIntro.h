@@ -4,7 +4,7 @@
 #include "p2Point.h"
 #include "Globals.h"
 #include "SDL.h"
-#include "box2d/box2d.h"
+#include <Box2D/Box2D.h>
 
 enum stage_state {
 	ST_UNKNOWN,

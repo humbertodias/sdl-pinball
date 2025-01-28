@@ -44,10 +44,10 @@ update_status ModulePhysics::PreUpdate()
 	{
 		if(c->GetFixtureA()->IsSensor() && c->IsTouching())
 		{
-//			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-//			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
-			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
+			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			// PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
+			// PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData().pointer;
 
 
 			if(pb1 && pb2 && pb1->listener)
@@ -80,8 +80,8 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	//b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = radius;
 
 	return pbody;
@@ -106,9 +106,9 @@ PhysBody* ModulePhysics::CreateCircleSensor(int x, int y, int radius)
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-//	b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
-	pbody->width = pbody->height = radius;
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
+	// pbody->width = pbody->height = radius;
 
 	return pbody;
 }
@@ -136,8 +136,8 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, bo
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	//b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);;
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);;
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
 
@@ -169,8 +169,8 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	//b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = width;
 	pbody->height = height;
 
@@ -227,8 +227,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool d
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	//b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = 0;
 
 	return pbody;
@@ -265,8 +265,8 @@ PhysBody* ModulePhysics::CreateChainSensor(int x, int y, int* points, int size)
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	//b->SetUserData(pbody);
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
+	b->SetUserData(pbody);
+	// b->GetUserData().pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = 0;
 
 	return pbody;
@@ -309,7 +309,7 @@ update_status ModulePhysics::PostUpdate()
 
 					for(int32 i = 0; i < count; ++i)
 					{
-						//v = b->GetWorldPoint(polygonShape->GetVertex(i));
+						// v = b->GetWorldPoint(polygonShape->GetVertex(i));
 						v = polygonShape->m_vertices[i];
 						if(i > 0)
 
@@ -318,7 +318,7 @@ update_status ModulePhysics::PostUpdate()
 						prev = v;
 					}
 
-//					v = b->GetWorldPoint(polygonShape->GetVertex(0));
+					// v = b->GetWorldPoint(polygonShape->GetVertex(0));
 					v = b->GetWorldPoint(polygonShape->m_vertices[0]);
 					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 				}
@@ -363,9 +363,8 @@ update_status ModulePhysics::PostUpdate()
 					def.bodyA = ground;
 					def.bodyB = f->GetBody();
 					def.target = mouse_position;
-// TODO:
-//					def.dampingRatio = 2.5f;
-//					def.frequencyHz = 2.0f;
+					def.dampingRatio = 2.5f;
+					def.frequencyHz = 2.0f;
 					def.maxForce = 100.0f * f->GetBody()->GetMass();
 					mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
 				}
@@ -374,6 +373,7 @@ update_status ModulePhysics::PostUpdate()
 	}
 
 	// Draws and updates the mouse joint as long as the mouse button is kept pressed
+	// if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint != NULL && mouse_joint->IsActive() == true) {
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint != NULL && mouse_joint->IsEnabled() == true) {
 		b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()) * SCREEN_SIZE, PIXEL_TO_METERS(App->input->GetMouseY()) * SCREEN_SIZE);
 		App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), METERS_TO_PIXELS(mouse_position.x), METERS_TO_PIXELS(mouse_position.y), 255, 255, 0);
@@ -381,6 +381,7 @@ update_status ModulePhysics::PostUpdate()
 	}
 
 	// Deletes mouse joint if mouse button is released
+	// if ((App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsActive() == true)) {
 	if ((App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsEnabled() == true)) {
 		world->DestroyJoint(mouse_joint);
 		mouse_joint = NULL;
@@ -464,10 +465,10 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
-//	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-//	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	// PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
+	// PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
 
 	int i = 0;
 
@@ -747,10 +748,10 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 void ModulePhysics::EndContact(b2Contact* contact)
 {
-//	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-//	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	// PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
+	// PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
 
 	if (physA && physA->listener != NULL)
 		physA->listener->OnCollision(physA, physB);

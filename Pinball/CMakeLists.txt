@@ -48,11 +48,15 @@ include(FetchContent)
 FetchContent_Declare(
         box2d
         GIT_REPOSITORY https://github.com/erincatto/box2d.git
-        GIT_TAG        v2.4.1 # Replace with the desired version
+        GIT_TAG        v2.4.0 # Replace with the desired version
 )
 
 # Ensure Box2D is downloaded and built
 FetchContent_MakeAvailable(box2d)
+set(box2d_INCLUDE_DIRS ${box2d_SOURCE_DIR}/Box2D)
+
+message(STATUS "Box2D source dir: ${box2d_SOURCE_DIR}")
+message(STATUS "Box2D binary dir: ${box2d_BINARY_DIR}")
 
 ## Platform-specific configurations
 #if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -73,8 +77,13 @@ message("SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}
 SDL2_IMAGE_INCLUDE_DIRS: ${SDL2_IMAGE_INCLUDE_DIRS}
 SDL2_IMAGE_INCLUDE_DIRS: ${SDL2_IMAGE_INCLUDE_DIRS}
 SDL2mixer_INCLUDE_DIRS: ${SDL2mixer_INCLUDE_DIRS}
+box2d_INCLUDE_DIRS: ${box2d_INCLUDE_DIRS}
+box2d_BINARY_DIR: ${box2d_BINARY_DIR}
 ")
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include)
+
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include ${box2d_INCLUDE_DIRS})
+
+target_link_directories(${PROJECT} PRIVATE ${box2d_BINARY_DIR})
 
 # Link the project with Box2D and SDL2 libraries
 target_link_libraries(${PROJECT} PRIVATE box2d ${SDL2_LINK_LIBRARIES} ${SDL2_IMAGE_LINK_LIBRARIES} ${SDL2mixer_LINK_LIBRARIES})
