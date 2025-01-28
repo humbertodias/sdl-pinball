@@ -41,17 +41,28 @@ INCLUDE(FindPkgConfig REQUIRED)
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 PKG_CHECK_MODULES(SDL2_IMAGE REQUIRED SDL2_image)
 PKG_CHECK_MODULES(SDL2mixer REQUIRED SDL2_mixer)
-PKG_CHECK_MODULES(box2d REQUIRED box2d)
 
-# Platform-specific configurations
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    add_definitions(-DGL_SILENCE_DEPRECATION)
-    target_link_libraries(${PROJECT} "-framework Metal -framework Foundation")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    add_compile_definitions(_USE_MATH_DEFINES)
-    add_compile_definitions(NOMINMAX)
-    target_compile_definitions(${PROJECT} PRIVATE /wd4251)
-endif()
+# FetchContent for Box2D
+include(FetchContent)
+
+FetchContent_Declare(
+        box2d
+        GIT_REPOSITORY https://github.com/erincatto/box2d.git
+        GIT_TAG        v2.4.1 # Replace with the desired version
+)
+
+# Ensure Box2D is downloaded and built
+FetchContent_MakeAvailable(box2d)
+
+## Platform-specific configurations
+#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    add_definitions(-DGL_SILENCE_DEPRECATION)
+#    target_link_libraries(${PROJECT} "-framework Metal -framework Foundation")
+#elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+#    add_compile_definitions(_USE_MATH_DEFINES)
+#    add_compile_definitions(NOMINMAX)
+#    target_compile_definitions(${PROJECT} PRIVATE /wd4251)
+#endif()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions("-g -O0 -Wall -Wextra -Wpedantic -fsanitize=address")
@@ -62,17 +73,12 @@ message("SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}
 SDL2_IMAGE_INCLUDE_DIRS: ${SDL2_IMAGE_INCLUDE_DIRS}
 SDL2_IMAGE_INCLUDE_DIRS: ${SDL2_IMAGE_INCLUDE_DIRS}
 SDL2mixer_INCLUDE_DIRS: ${SDL2mixer_INCLUDE_DIRS}
-box2d_INCLUDE_DIRS: ${box2d_INCLUDE_DIRS}
 ")
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include ${box2d_INCLUDE_DIRS})
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include)
 
-message("SDL2_LINK_LIBRARIES: ${SDL2_LINK_LIBRARIES}
-SDL2_IMAGE_LINK_LIBRARIES: ${SDL2_IMAGE_LINK_LIBRARIES}
-SDL2mixer_LINK_LIBRARIES: ${SDL2mixer_LINK_LIBRARIES}
-box2d_LINK_LIBRARIES: ${box2d_LINK_LIBRARIES}
-")
-target_link_libraries(${PROJECT} ${SDL2_LINK_LIBRARIES} ${SDL2_IMAGE_LINK_LIBRARIES} ${SDL2mixer_LINK_LIBRARIES} ${box2d_LINK_LIBRARIES} box2d)
+# Link the project with Box2D and SDL2 libraries
+target_link_libraries(${PROJECT} PRIVATE box2d ${SDL2_LINK_LIBRARIES} ${SDL2_IMAGE_LINK_LIBRARIES} ${SDL2mixer_LINK_LIBRARIES})
 
 # Install the target and resources
-#install(TARGETS ${PROJECT} DESTINATION ..)
-#install(DIRECTORY ${ASSETS_OUTPUT_DIR}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/assets)
+# install(TARGETS ${PROJECT} DESTINATION ..)
+# install(DIRECTORY ${ASSETS_OUTPUT_DIR}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/assets)

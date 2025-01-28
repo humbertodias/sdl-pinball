@@ -1,6 +1,10 @@
+### Build and Run
+
 ```shell
-cmake -DCMAKE_BUILD_TYPE=Debug -Bbuild
-cmake --build build --config Debug
-cd ../Game
-../build/pinball
+BUILD_TYPE=Debug
+#BUILD_TYPE=Release
+rm -rf build
+cmake -Bbuild -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+cmake --build build --config $BUILD_TYPE 
+(cd Game && ../build/pinball)
 ```
