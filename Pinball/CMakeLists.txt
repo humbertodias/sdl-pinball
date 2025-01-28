@@ -53,7 +53,7 @@ FetchContent_Declare(
 
 # Ensure Box2D is downloaded and built
 FetchContent_MakeAvailable(box2d)
-set(box2d_INCLUDE_DIRS ${box2d_SOURCE_DIR}/Box2D)
+set(box2d_INCLUDE_DIRS ${box2d_SOURCE_DIR}/include)
 
 message(STATUS "Box2D source dir: ${box2d_SOURCE_DIR}")
 message(STATUS "Box2D binary dir: ${box2d_BINARY_DIR}")

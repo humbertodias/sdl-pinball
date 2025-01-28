@@ -2,7 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "p2Point.h"
-#include <Box2D/Box2D.h>
+#include <box2d/box2d.h>
 
 class ModulePlayer : public Module
 {
