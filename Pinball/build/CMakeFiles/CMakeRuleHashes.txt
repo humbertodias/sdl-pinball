@@ -1,4 +1,0 @@
-# Hashes of file build rules.
-dfca805c35e1ed4d65e40f19d3054ad1 Box2D-prefix/src/Box2D-stamp/Box2D-download
-ef0037a0840248a89c848c9608ec144d Box2D-prefix/src/Box2D-stamp/Box2D-mkdir
-a655cfda6f2493aebe12d2176de97102 Box2D-prefix/src/Box2D-stamp/Box2D-patch

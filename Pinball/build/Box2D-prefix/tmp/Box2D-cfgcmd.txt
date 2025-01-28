@@ -1,1 +1,0 @@
-cmd='/opt/homebrew/bin/cmake;-DCMAKE_INSTALL_PREFIX=/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/box2d_build/install;-DCMAKE_BUILD_TYPE=Release;-GUnix Makefiles;-S;<SOURCE_DIR><SOURCE_SUBDIR>;-B;<BINARY_DIR>'
