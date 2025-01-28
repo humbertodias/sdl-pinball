@@ -1,0 +1,15 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=git
+command=/opt/homebrew/bin/cmake;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/tmp/Box2D-gitclone.cmake
+source_dir=/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D
+work_dir=/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src
+repository=https://github.com/erincatto/box2d.git
+remote=origin
+init_submodules=TRUE
+recurse_submodules=--recursive
+submodules=
+CMP0097=
+      

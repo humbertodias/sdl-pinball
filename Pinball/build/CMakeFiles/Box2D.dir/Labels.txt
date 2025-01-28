@@ -1,0 +1,13 @@
+# Target labels
+ Box2D
+# Source files and their labels
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/CMakeFiles/Box2D
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/CMakeFiles/Box2D.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/CMakeFiles/Box2D-complete.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-build.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-configure.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-download.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-install.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-mkdir.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-patch.rule
+/Users/cex/dev/repository/personal/sdl-pinball/Pinball/build/Box2D-prefix/src/Box2D-stamp/Box2D-update.rule
