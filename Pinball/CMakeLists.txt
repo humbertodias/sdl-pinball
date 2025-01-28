@@ -48,8 +48,18 @@ include(FetchContent)
 FetchContent_Declare(
         box2d
         GIT_REPOSITORY https://github.com/erincatto/box2d.git
-        GIT_TAG        v2.4.0 # Replace with the desired version
+        GIT_TAG v2.4.0 # Replace with the desired version
 )
+
+FetchContent_GetProperties(box2d)
+if (NOT box2d_POPULATED)
+    FetchContent_Populate(box2d)
+    # Disable tests explicitly in the Box2D project
+    set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+    set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+    add_subdirectory(${box2d_SOURCE_DIR} ${box2d_BINARY_DIR})
+endif ()
+
 
 # Ensure Box2D is downloaded and built
 FetchContent_MakeAvailable(box2d)
@@ -71,7 +81,7 @@ message(STATUS "Box2D binary dir: ${box2d_BINARY_DIR}")
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions("-g -O0 -Wall -Wextra -Wpedantic -fsanitize=address")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
-endif()
+endif ()
 
 message("SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}
 SDL2_IMAGE_INCLUDE_DIRS: ${SDL2_IMAGE_INCLUDE_DIRS}
